@@ -1,3 +1,2 @@
-bin_PROGRAMS = hello
-hello_SOURCES = main.c hello.c
+SUBDIRS = src/hello
 dist_doc_DATA = README.md

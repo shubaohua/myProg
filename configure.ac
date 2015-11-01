@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([myhello], [0.1], [futurewayne@gmail.com])
+AC_INIT([myProg], [0.1], [futurewayne@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADERS([config.h])
 
@@ -17,5 +17,7 @@ AC_PROG_CC
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+src/hello/Makefile
+])
 AC_OUTPUT
