@@ -8,6 +8,9 @@ AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+# needed for static libs compiling
+AC_PROG_RANLIB
+AM_PROG_AR
 
 # Checks for libraries.
 
@@ -19,5 +22,6 @@ AC_PROG_CC
 
 AC_CONFIG_FILES([Makefile
 src/hello/Makefile
+src/hello/alib/Makefile
 ])
 AC_OUTPUT
