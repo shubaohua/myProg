@@ -13,6 +13,7 @@ AC_PROG_RANLIB
 AM_PROG_AR
 
 # Checks for libraries.
+AC_PROG_LIBTOOL
 
 # Checks for header files.
 
