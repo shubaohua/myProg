@@ -60,6 +60,7 @@ class inputCellLB (tk.Frame):
 
 class inputCellOM (tk.Frame):
     def __init__(self, parent, ltxt, alist, default):
+	# type: (object, object, object, object) -> object
 	tk.Frame.__init__(self, parent, class_='inputCellOM')
 	self.pack(side=TOP)
 	self.creatWidget(ltxt, alist, default)
@@ -163,17 +164,16 @@ def do_en_serial():
         mywin.text_button_en.set('Serial Enabled')
         mywin.button_en.configure(bg = 'green')
         mywin.button_en.configure(activebackground = 'green')
-	print "COM port: %s" % mywin.port.get()
-	print "Baudrate: %d" % int(mywin.baudrate.get())
-	print "Timeout: %d" % int(mywin.timeout.get())
+        print "COM port: %s" % mywin.port.get()
+        print "Baudrate: %d" % int(mywin.baudrate.get())
+        print "Timeout: %d" % int(mywin.timeout.get())
         print "Bytesize: %d" % int(mywin.bytesize.get())
         print "Parity: %s" % mywin.parity.get()[0]
         print "Stopbits: %f" % int(mywin.stopbits.get())
         print "XONXOFF: %d" % mywin.xonxoff.get()
         print "RTSCTS: %d" % mywin.rtscts.get()
         print "inHEX: %d" % mywin.inHex.get()
-        try:
-            ser.open_port(mywin.port.get(),
+        if False == ser.open_port(mywin.port.get(),
                     mywin.baudrate.get(),
                     int(mywin.timeout.get()),
                     int(mywin.bytesize.get()),
@@ -181,16 +181,14 @@ def do_en_serial():
                     int(mywin.stopbits.get()),
                     mywin.xonxoff.get(),
                     mywin.rtscts.get(),
-                    mywin.inHex.get())
-        except:
-            traceback.print_exc()
-            if ser.isOpen:
-                self.isOpen = False
-                time.sleep(1)
-                ser.close_port()
+                    mywin.inHex.get()):
+            mywin.isSerialEnabled = False
+            mywin.text_button_en.set('Serial Disabled')
+            mywin.button_en.configure(bg='red')
+            mywin.button_en.configure(activebackground='red')
 
 class aSerial:
-    port_list = ['NULL',]
+    port_list = ['NULL']
     parity_list = ('NONE', 'EVEN', 'ODD', 'MARK', 'SPACE')
     stopbits_list = ('1', '1.5', '2')
     bytesize_list= ('5', '6', '7', '8')
@@ -203,6 +201,7 @@ class aSerial:
         self.rx_cnt = 0
         self.tx_cnt = 0
         self.crlf = 0
+        self.sp = 'NULL'
 
     def __del__(self):
         self.isOpen = False
@@ -222,18 +221,29 @@ class aSerial:
             self.port_list.append(port)
 
     def open_port(self, port, baudrate, timeout, bytesize, parity, stopbits, xonxoff, rtscts, inHex):
-        self.sp = serial.Serial(port=port, baudrate=baudrate, bytesize=bytesize, parity=parity, stopbits=stopbits,
-                xonxoff=xonxoff, rtscts=rtscts, timeout=timeout, write_timeout=timeout)
-        self.inHex = inHex
-        if self.sp.isOpen():
-            print "%s is opened" % port
-            self.isOpen = True
-        thread.start_new_thread(self.receive, ())
+        if port != 'NULL':
+            try:
+                self.sp = serial.Serial(port=port, baudrate=baudrate, bytesize=bytesize,
+                                        parity=parity, stopbits=stopbits, xonxoff=xonxoff,
+                                        rtscts=rtscts, timeout=timeout, write_timeout=timeout)
+            except:
+                traceback.print_exc()
+                return False
+            if self.sp.isOpen():
+                print "%s is opened" % port
+                self.isOpen = True
+                self.inHex = inHex
+            thread.start_new_thread(self.receive, ())
+            return True
+        else:
+            print "Serial port is NULL"
+            return False
 
     def close_port(self):
         self.isOpen = False
         time.sleep(1)
-        self.sp.close()
+        if self.sp != 'NULL':
+            self.sp.close()
 
     def receive(self):
         while self.isOpen == True:
@@ -255,7 +265,7 @@ class aSerial:
             print "Serial is closed. Receiving function exits."
 
     def transmit(self, aStr):
-        print "TX: %s" % aStr
+        print "aTX: %s" % aStr
         if self.inHex:
             try:
                 bStr = binascii.unhexlify(aStr)
@@ -265,14 +275,15 @@ class aSerial:
                 return
         else:
             bStr = aStr + '\n'
-        ser.sp.write(bStr)			
+            print "bTX: %s" % bStr
+        ser.sp.write(bStr)
 
+#def main():
 ser = aSerial()
 rootWin = tk.Tk()
 rootWin.title('Serial COM Port Configuration & Test')
 mywin = mainWin(rootWin)
 rootWin.mainloop()
-
 
 #if __name__ == "__main__":
 #    main()
