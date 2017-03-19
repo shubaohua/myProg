@@ -190,7 +190,7 @@ def do_en_serial():
                 ser.close_port()
 
 class aSerial:
-    port_list = []
+    port_list = ['NULL',]
     parity_list = ('NONE', 'EVEN', 'ODD', 'MARK', 'SPACE')
     stopbits_list = ('1', '1.5', '2')
     bytesize_list= ('5', '6', '7', '8')
