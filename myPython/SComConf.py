@@ -10,6 +10,7 @@ import thread
 import traceback
 import binascii
 
+
 class ScrolledText(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent)
@@ -26,14 +27,14 @@ class ScrolledText(tk.Frame):
         self.get = self.text.get
         self.index = self.text.index
         self.search = self.text.search
-	
 
-class inputCellE (tk.Frame):
+
+class inputCellE(tk.Frame):
     def __init__(self, parent, ltxt, default):
-	tk.Frame.__init__(self, parent, class_='inputCellE')
-	self.pack(side=TOP)
-	self.creatWidget(ltxt, default)
-	self.get = self.p.get
+        tk.Frame.__init__(self, parent, class_='inputCellE')
+        self.pack(side=TOP)
+        self.creatWidget(ltxt, default)
+        self.get = self.p.get
 
     def creatWidget(self, ltxt, default):
         self.l = Label(self, text=ltxt, width=10, anchor=E, padx=5)
@@ -43,12 +44,12 @@ class inputCellE (tk.Frame):
         self.p.pack(side=RIGHT)
 
 
-class inputCellLB (tk.Frame):
+class inputCellLB(tk.Frame):
     def __init__(self, parent, ltxt, alist):
-	tk.Frame.__init__(self, parent, class_='inputCellLB')
-	self.pack(side=TOP)
-	self.creatWidget(ltxt, alist)
-	self.get = self.p.get
+        tk.Frame.__init__(self, parent, class_='inputCellLB')
+        self.pack(side=TOP)
+        self.creatWidget(ltxt, alist)
+        self.get = self.p.get
 
     def creatWidget(self, ltxt, alist):
         self.l = Label(self, text=ltxt, width=10, anchor=E, padx=5)
@@ -58,24 +59,24 @@ class inputCellLB (tk.Frame):
         self.p.pack(side=RIGHT)
 
 
-class inputCellOM (tk.Frame):
+class inputCellOM(tk.Frame):
     def __init__(self, parent, ltxt, alist, default):
-	# type: (object, object, object, object) -> object
-	tk.Frame.__init__(self, parent, class_='inputCellOM')
-	self.pack(side=TOP)
-	self.creatWidget(ltxt, alist, default)
-	self.get = self.v.get
+        # type: (object, object, object, object) -> object
+        tk.Frame.__init__(self, parent, class_='inputCellOM')
+        self.pack(side=TOP)
+        self.creatWidget(ltxt, alist, default)
+        self.get = self.v.get
 
     def creatWidget(self, ltxt, alist, default):
         self.l = Label(self, text=ltxt, width=10, anchor=E, padx=5)
         self.l.pack(side=LEFT)
-	self.v = StringVar()
+        self.v = StringVar()
         self.v.set(default)
         self.p = OptionMenu(self, self.v, *alist)
         self.p.pack(side=RIGHT)
 
 
-class mainWin (tk.Frame):
+class mainWin(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, class_='mainWin')
         self.pack(fill=BOTH, expand=TRUE)
@@ -83,7 +84,7 @@ class mainWin (tk.Frame):
         self.creatWidget()
 
     def creatWidget(self):
-        pw1 = PanedWindow(self) 
+        pw1 = PanedWindow(self)
         pw1.pack(fill=BOTH, expand=1)
         frameInput = LabelFrame(pw1, text="SCom Parameters", height=200, width=30)
         frameInput.pack(fill="both", expand="yes")
@@ -91,7 +92,7 @@ class mainWin (tk.Frame):
         self.port = inputCellOM(frameInput, "Port:", ser.port_list, ser.port_list[0])
         self.baudrate = inputCellE(frameInput, "Baudrate:", "19200")
         self.timeout = inputCellE(frameInput, "Timeout(s):", "5")
-        self.bytesize = inputCellOM(frameInput, "DataBits:", ser.bytesize_list, ser.bytesize_list[3]) 
+        self.bytesize = inputCellOM(frameInput, "DataBits:", ser.bytesize_list, ser.bytesize_list[3])
         self.parity = inputCellOM(frameInput, "Parity:", ser.parity_list, ser.parity_list[0])
         self.stopbits = inputCellOM(frameInput, "StopBits:", ser.stopbits_list, ser.stopbits_list[0])
         subframe1 = tk.Frame(frameInput)
@@ -108,9 +109,10 @@ class mainWin (tk.Frame):
         self.isSerialEnabled = False
         self.text_button_en = StringVar()
         self.text_button_en.set('Serial Disabled')
-        self.button_en = Button(frameInput, textvariable=self.text_button_en, command=do_en_serial, bg='red', activebackground='red')
+        self.button_en = Button(frameInput, textvariable=self.text_button_en, command=do_en_serial, bg='red',
+                                activebackground='red')
         self.button_en.pack(side=TOP)
-        
+
         pw2 = PanedWindow(pw1, orient=VERTICAL)
         pw1.add(pw2)
         frameTransmitted = LabelFrame(pw2, text="Transmitted", width=800, height=100)
@@ -126,7 +128,7 @@ class mainWin (tk.Frame):
 
     def creatMenu(self, parent):
         menubar = Menu(self)
-        filemenu = Menu(menubar,tearoff=0)
+        filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(label="Open", command=open)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=parent.quit)
@@ -141,7 +143,8 @@ class mainWin (tk.Frame):
 
 
 def about():
-    tkMessageBox.showinfo("About", "Serial COM Port Configuration & Test Tool\ndesigned by Wei in Sep 2016\nEmail: futurewayne@gmail.com")
+    tkMessageBox.showinfo("About",
+                          "Serial COM Port Configuration & Test Tool\ndesigned by Wei in Sep 2016\nEmail: futurewayne@gmail.com")
 
 
 def open():
@@ -150,20 +153,23 @@ def open():
 
 def do_tx():
     txStr = mywin.entry_tx.get()
-    ser.transmit(txStr)
+    tmp = "".join(txStr.split())
+    print tmp
+    ser.transmit(tmp)
+
 
 def do_en_serial():
     if mywin.isSerialEnabled:
         mywin.isSerialEnabled = False
         mywin.text_button_en.set('Serial Disabled')
-        mywin.button_en.configure(bg = 'red')
-        mywin.button_en.configure(activebackground = 'red')
+        mywin.button_en.configure(bg='red')
+        mywin.button_en.configure(activebackground='red')
         ser.close_port()
     else:
         mywin.isSerialEnabled = True
         mywin.text_button_en.set('Serial Enabled')
-        mywin.button_en.configure(bg = 'green')
-        mywin.button_en.configure(activebackground = 'green')
+        mywin.button_en.configure(bg='green')
+        mywin.button_en.configure(activebackground='green')
         print "COM port: %s" % mywin.port.get()
         print "Baudrate: %d" % int(mywin.baudrate.get())
         print "Timeout: %d" % int(mywin.timeout.get())
@@ -174,24 +180,25 @@ def do_en_serial():
         print "RTSCTS: %d" % mywin.rtscts.get()
         print "inHEX: %d" % mywin.inHex.get()
         if False == ser.open_port(mywin.port.get(),
-                    mywin.baudrate.get(),
-                    int(mywin.timeout.get()),
-                    int(mywin.bytesize.get()),
-                    mywin.parity.get()[0],
-                    int(mywin.stopbits.get()),
-                    mywin.xonxoff.get(),
-                    mywin.rtscts.get(),
-                    mywin.inHex.get()):
+                                  mywin.baudrate.get(),
+                                  int(mywin.timeout.get()),
+                                  int(mywin.bytesize.get()),
+                                  mywin.parity.get()[0],
+                                  int(mywin.stopbits.get()),
+                                  mywin.xonxoff.get(),
+                                  mywin.rtscts.get(),
+                                  mywin.inHex.get()):
             mywin.isSerialEnabled = False
             mywin.text_button_en.set('Serial Disabled')
             mywin.button_en.configure(bg='red')
             mywin.button_en.configure(activebackground='red')
 
+
 class aSerial:
     port_list = ['NULL']
     parity_list = ('NONE', 'EVEN', 'ODD', 'MARK', 'SPACE')
     stopbits_list = ('1', '1.5', '2')
-    bytesize_list= ('5', '6', '7', '8')
+    bytesize_list = ('5', '6', '7', '8')
 
     def __init__(self):
         self.list_ports()
@@ -266,24 +273,23 @@ class aSerial:
 
     def transmit(self, aStr):
         print "aTX: %s" % aStr
-        if self.inHex:
-            try:
-                bStr = binascii.unhexlify(aStr)
-            except:
-                traceback.print_exc()
-                tkMessageBox.showinfo("Input Error","Need Even-length string for transmition in HEX mode!")
-                return
-        else:
-            bStr = aStr + '\n'
-            print "bTX: %s" % bStr
-        ser.sp.write(bStr)
+        if self.isOpen == True:
+            if self.inHex:
+                try:
+                    bStr = binascii.unhexlify(aStr)
+                except:
+                    traceback.print_exc()
+                    tkMessageBox.showinfo("Input Error", "Need Even-length string for transmition in HEX mode!")
+                    return
+            else:
+                bStr = aStr + '\n'
+                print "bTX: %s" % bStr
+            ser.sp.write(bStr)
 
-#def main():
-ser = aSerial()
-rootWin = tk.Tk()
-rootWin.title('Serial COM Port Configuration & Test')
-mywin = mainWin(rootWin)
-rootWin.mainloop()
 
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    ser = aSerial()
+    rootWin = tk.Tk()
+    rootWin.title('Serial COM Port Configuration & Test')
+    mywin = mainWin(rootWin)
+    rootWin.mainloop()
